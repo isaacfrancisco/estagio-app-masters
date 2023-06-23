@@ -1,7 +1,8 @@
-import Hello from '~/components/Hello';
+import Main from '~/components/Main';
+import './global.css';
 
 function App() {
-  return <Hello />;
+  return <Main />;
 }
 
 export default App;
