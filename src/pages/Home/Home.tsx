@@ -1,26 +1,16 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-import '../DropdownFilter/styles.css';
-import './styles.css';
-import ErrorContainer from '../ErrorContainer';
-import Loader from '../Loader';
-import SearchInput from '../SearchInput';
-import Pagination from '../Pagination';
+import './Home.css';
+import ErrorContainer from '../../components/ErrorContainer/ErrorContainer';
+import Loader from '../../components/Loader/Loader';
+import SearchInput from '../../components/SearchInput/SearchInput';
+import Pagination from '../../components/Pagination/Pagination';
+import DropdownFilter from '../../components/DropdownFilter/DropdownFilter';
+import { GameProps } from '~/interfaces/HomeProps';
+import List from '~/components/List/List';
+import ListItem from '~/components/ListItem/ListItem';
+import Card from '~/components/Card/Card';
 
-interface GameProps {
-  id: number;
-  title: string;
-  thumbnail: string;
-  short_description: string;
-  game_url: string;
-  genre: string;
-  platform: string;
-  publisher: string;
-  developer: string;
-  release_date: string;
-  freetogame_profile_url: string;
-}
-
-const Main = () => {
+const Home = () => {
   const [games, setGames] = useState<GameProps[]>([]);
   const [hasError, setHasError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -54,7 +44,6 @@ const Main = () => {
         }
 
         const data = await response.json();
-        console.log(data);
         setGames(data);
         setLoading(false);
       } catch (error: any) {
@@ -104,33 +93,25 @@ const Main = () => {
         <div className='main'>
           <div className='filter-container'>
             <SearchInput search={search} handleSearchChange={handleSearchChange} />
-            <select className='select-box' value={genreSelected} onChange={handleDropdownChange}>
-              <option value=''>Selecione uma opção</option>
-              {gamesGenre.map((genre, index) => {
-                return (
-                  <option value={genre} key={index}>
-                    {genre}
-                  </option>
-                );
-              })}
-            </select>
+            <DropdownFilter
+              gamesGenre={gamesGenre}
+              genreSelected={genreSelected}
+              handleDropdownChange={handleDropdownChange}
+            />
           </div>
-          <ul className='cards'>
+          <List>
             {currentGames?.map((game: GameProps, index: number) => {
               return (
-                <li key={index} className='cards_item'>
-                  <div className='card'>
-                    <img src={game.thumbnail} alt='' />
-                    <div className='card_content'>
-                      <h2 className='card_title'>{game.title}</h2>
-                      <p className='card_text'>{game.short_description}</p>
-                    </div>
-                    <button className='btn card_btn'>Saiba mais</button>
-                  </div>
-                </li>
+                <ListItem key={index}>
+                  <Card
+                    description={game.short_description}
+                    image={game.thumbnail}
+                    title={game.title}
+                  />
+                </ListItem>
               );
             })}
-          </ul>
+          </List>
           <Pagination
             gamesPerPage={gamesPerPage}
             totalGames={filteredGames.length}
@@ -142,4 +123,4 @@ const Main = () => {
   );
 };
 
-export default Main;
+export default Home;
