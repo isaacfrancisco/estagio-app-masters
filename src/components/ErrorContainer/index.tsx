@@ -1,12 +1,7 @@
 import SadIcon from '../../assets/sad.svg';
 import './error.css';
 
-const ErrorContainer = ({ statusCode }: { statusCode: number }) => {
-  const responseErrors = [500, 502, 503, 504, 507, 508, 509];
-  const message = responseErrors.includes(statusCode)
-    ? ' O servidor falhou em responder, tente recarregar a página'
-    : 'O servidor não conseguirá responder por agora, tente voltar novamente mais tarde';
-
+const ErrorContainer = ({ message }: { message: string }) => {
   return (
     <div>
       <div className='error_container'>
