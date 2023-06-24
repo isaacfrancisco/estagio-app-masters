@@ -23,13 +23,13 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const timeoutId = setTimeout(() => controller.abort(), import.meta.env.VITE_REQUEST_TIMEOUT);
       const responseErrors = [500, 502, 503, 504, 507, 508, 509];
 
       try {
-        const response = await fetch('https://games-test-api-81e9fb0d564a.herokuapp.com/api/data', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/data`, {
           headers: {
-            'dev-email-address': 'isaacfrancisco14@gmail.com',
+            'dev-email-address': import.meta.env.VITE_API_EMAIL,
           },
           signal: controller.signal,
         });
