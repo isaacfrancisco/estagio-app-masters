@@ -3,6 +3,13 @@
   margin: 0 auto;
 }
 
+.filter-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
 h1 {
   font-size: 24px;
   font-weight: 400;
@@ -11,7 +18,7 @@ h1 {
 
 img {
   height: auto;
-  max-width: 100%;
+  width: 100%;
   vertical-align: middle;
 }
 
@@ -46,7 +53,7 @@ img {
   padding: 1rem;
 }
 
-@media (min-width: 40rem) {
+@media (min-width: 31rem) {
   .cards_item {
     width: 50%;
   }
@@ -65,12 +72,14 @@ img {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  flex: 1;
 }
 
 .card_content {
   padding: 1rem;
   background: rgb(250, 250, 250);
   flex-grow: 1;
+  width: 100%;
 }
 
 .card_title {
@@ -88,11 +97,4 @@ img {
   line-height: 1.5;
   margin-bottom: 1.25rem;
   font-weight: 400;
-}
-
-.made_by {
-  font-weight: 400;
-  font-size: 13px;
-  margin-top: 35px;
-  text-align: center;
 }

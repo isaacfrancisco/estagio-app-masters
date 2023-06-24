@@ -4,6 +4,7 @@ import './styles.css';
 import ErrorContainer from '../ErrorContainer';
 import Loader from '../Loader';
 import SearchInput from '../SearchInput';
+import Pagination from '../Pagination';
 
 interface GameProps {
   id: number;
@@ -25,18 +26,9 @@ const Main = () => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>('');
-  const [genreSelected, setGenreSelected] = useState('');
-
-  const filteredGames =
-    genreSelected.length > 0
-      ? games.filter((game) => {
-          return game.genre.toLowerCase() === genreSelected.toLowerCase();
-        })
-      : games.filter((game) => {
-          return game.title.toLowerCase().startsWith(search.toLowerCase());
-        });
-
-  const gamesGenre = Array.from(new Set(games.map((game) => game.genre)));
+  const [genreSelected, setGenreSelected] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const gamesPerPage = 6;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -77,6 +69,21 @@ const Main = () => {
     fetchData();
   }, []);
 
+  const filteredGames =
+    genreSelected.length > 0
+      ? games.filter((game) => {
+          return game.genre.toLowerCase() === genreSelected.toLowerCase();
+        })
+      : games.filter((game) => {
+          return game.title.toLowerCase().startsWith(search.toLowerCase());
+        });
+
+  const gamesGenre = Array.from(new Set(games.map((game) => game.genre)));
+
+  const lastGameIndex = currentPage * gamesPerPage;
+  const firstGameIndex = lastGameIndex - gamesPerPage;
+  const currentGames = filteredGames.slice(firstGameIndex, lastGameIndex);
+
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
   };
@@ -95,14 +102,7 @@ const Main = () => {
         <Loader />
       ) : (
         <div className='main'>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <div className='filter-container'>
             <SearchInput search={search} handleSearchChange={handleSearchChange} />
             <select className='select-box' value={genreSelected} onChange={handleDropdownChange}>
               <option value=''>Selecione uma opção</option>
@@ -116,7 +116,7 @@ const Main = () => {
             </select>
           </div>
           <ul className='cards'>
-            {filteredGames?.map((game: GameProps, index: number) => {
+            {currentGames?.map((game: GameProps, index: number) => {
               return (
                 <li key={index} className='cards_item'>
                   <div className='card'>
@@ -131,6 +131,11 @@ const Main = () => {
               );
             })}
           </ul>
+          <Pagination
+            gamesPerPage={gamesPerPage}
+            totalGames={filteredGames.length}
+            setCurrentPage={setCurrentPage}
+          />
         </div>
       )}
     </div>
