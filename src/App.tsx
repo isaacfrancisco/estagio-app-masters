@@ -8,7 +8,7 @@ function App() {
     <div>
       <h1>Lista de Jogos</h1>
       <Routes>
-        <Route path='/' element={<Home />} />
+        <Route path='/estagio-app-masters' element={<Home />} />
         <Route path='*' element={<Error />} />
       </Routes>
     </div>
