@@ -1,5 +1,4 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-import '../../components/Loader/Loader.css';
 import './Home.css';
 import ErrorContainer from '../../components/ErrorContainer/ErrorContainer';
 import Loader from '../../components/Loader/Loader';
