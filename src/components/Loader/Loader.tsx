@@ -1,5 +1,5 @@
 import FlexContainer from '../FlexContainer/FlexContainer';
-import './Loader.css';
+import '~/components/Loader/Loader.css';
 
 const Loader = () => {
   return (
