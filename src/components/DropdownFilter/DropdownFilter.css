@@ -11,3 +11,11 @@
   font-family: inherit;
   outline: none;
 }
+
+@media all and (max-width: 500px) {
+  .select-box {
+    width: 92%;
+    margin-right: 0;
+    flex: none;
+  }
+}

@@ -17,3 +17,10 @@
   font-size: large;
   padding: 5px;
 }
+
+@media all and (max-width: 500px) {
+  .search-header {
+    width: 95%;
+    flex: 1;
+  }
+}

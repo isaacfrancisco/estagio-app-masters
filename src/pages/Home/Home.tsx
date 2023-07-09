@@ -9,6 +9,7 @@ import { GameProps } from '~/interfaces/HomeProps';
 import List from '~/components/List/List';
 import ListItem from '~/components/ListItem/ListItem';
 import Card from '~/components/Card/Card';
+import Header from '~/components/Header';
 
 const Home = () => {
   const [games, setGames] = useState<GameProps[]>([]);
@@ -17,8 +18,12 @@ const Home = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>('');
   const [genreSelected, setGenreSelected] = useState<string>('');
+
   const [currentPage, setCurrentPage] = useState<number>(1);
   const gamesPerPage = 6;
+
+  const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+  console.log('currentUser', currentUser);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -90,34 +95,38 @@ const Home = () => {
       {loading ? (
         <Loader />
       ) : (
-        <div className='main'>
-          <div className='filter-container'>
-            <SearchInput search={search} handleSearchChange={handleSearchChange} />
-            <DropdownFilter
-              gamesGenre={gamesGenre}
-              genreSelected={genreSelected}
-              handleDropdownChange={handleDropdownChange}
+        <>
+          <Header />
+          <div className='main'>
+            <div className='filter-container'>
+              <SearchInput search={search} handleSearchChange={handleSearchChange} />
+              <DropdownFilter
+                gamesGenre={gamesGenre}
+                genreSelected={genreSelected}
+                handleDropdownChange={handleDropdownChange}
+              />
+            </div>
+            <List>
+              {currentGames?.map((game: GameProps, index: number) => {
+                return (
+                  <ListItem key={index}>
+                    <Card
+                      id={game.id}
+                      description={game.short_description}
+                      image={game.thumbnail}
+                      title={game.title}
+                    />
+                  </ListItem>
+                );
+              })}
+            </List>
+            <Pagination
+              gamesPerPage={gamesPerPage}
+              totalGames={filteredGames.length}
+              setCurrentPage={setCurrentPage}
             />
           </div>
-          <List>
-            {currentGames?.map((game: GameProps, index: number) => {
-              return (
-                <ListItem key={index}>
-                  <Card
-                    description={game.short_description}
-                    image={game.thumbnail}
-                    title={game.title}
-                  />
-                </ListItem>
-              );
-            })}
-          </List>
-          <Pagination
-            gamesPerPage={gamesPerPage}
-            totalGames={filteredGames.length}
-            setCurrentPage={setCurrentPage}
-          />
-        </div>
+        </>
       )}
     </div>
   );

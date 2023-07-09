@@ -1,5 +1,5 @@
 {
-  "homepage": "https://isaacfrancisco.github.io/estagio-app-masters",
+  "homepage": "https://isaacfrancisco.github.io",
   "name": "estagio-app-masters",
   "private": true,
   "version": "0.0.0",
@@ -16,6 +16,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "firebase": "9.0.0",
     "path": "^0.12.7",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
