@@ -1,9 +1,8 @@
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import './Home.css';
 import ErrorContainer from '../../components/ErrorContainer/ErrorContainer';
 import Loader from '../../components/Loader/Loader';
 import SearchInput from '../../components/SearchInput/SearchInput';
-import Pagination from '../../components/Pagination/Pagination';
 import DropdownFilter from '../../components/DropdownFilter/DropdownFilter';
 import { GameProps } from '~/interfaces/HomeProps';
 import List from '~/components/List/List';
@@ -21,21 +20,11 @@ const Home = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>('');
   const [genreSelected, setGenreSelected] = useState<string>('');
-  const [currentGames, setCurrentGames] = useState<GameProps[]>([]);
   const [gamesGenre, setGamesGenre] = useState<string[]>([]);
   const [filteredGames, setFilteredGames] = useState<GameProps[]>([]);
   const [userFavoriteGames, setUserFavoriteGames] = useState<IFavoriteGame[]>([]);
 
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const gamesPerPage = 6;
-
   const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-
-  const updateCurrentGames = useCallback(() => {
-    const lastGameIndex = currentPage * gamesPerPage;
-    const firstGameIndex = lastGameIndex - gamesPerPage;
-    setCurrentGames(filteredGames.slice(firstGameIndex, lastGameIndex));
-  }, [currentPage, filteredGames, gamesPerPage]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,16 +85,17 @@ const Home = () => {
     );
     if (favoriteGameInList) {
       game.is_favorite = true;
+      game.doc_id = favoriteGameInList.doc_id;
+      game.rating = favoriteGameInList.rating;
       return game;
     }
+    game.rating = 0;
     return game;
   });
 
-  const favoriteGamesList = updatedGamesWithFavorites.filter((game) => game.is_favorite);
+  console.log(updatedGamesWithFavorites);
 
-  useEffect(() => {
-    updateCurrentGames();
-  }, [updateCurrentGames]);
+  const favoriteGamesList = updatedGamesWithFavorites.filter((game) => game.is_favorite);
 
   useEffect(() => {
     const genres = Array.from(new Set(games.map((game) => game.genre)));
@@ -152,25 +142,22 @@ const Home = () => {
               />
             </div>
             <List>
-              {currentGames?.map((game: GameProps, index: number) => {
+              {updatedGamesWithFavorites?.map((game: GameProps, index: number) => {
                 return (
                   <ListItem key={index}>
                     <Card
+                      doc_id={game.doc_id}
                       id={game.id}
                       description={game.short_description}
                       image={game.thumbnail}
                       title={game.title}
                       is_favorite={game.is_favorite}
+                      rating={game.rating ?? 0}
                     />
                   </ListItem>
                 );
               })}
             </List>
-            <Pagination
-              gamesPerPage={gamesPerPage}
-              totalGames={filteredGames.length}
-              setCurrentPage={setCurrentPage}
-            />
           </div>
         </>
       )}

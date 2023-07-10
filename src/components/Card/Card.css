@@ -49,3 +49,11 @@
   cursor: pointer;
   filter: invert(15%) sepia(100%) saturate(3636%) hue-rotate(339deg) brightness(91%) contrast(97%);
 }
+
+.icon-box input[type='radio'] {
+  display: none;
+}
+
+.star {
+  cursor: pointer;
+}

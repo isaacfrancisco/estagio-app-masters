@@ -2,6 +2,7 @@ import { IFavoriteGame } from '~/database/interfaces/favoriteGamesInterface';
 import {
   addFavoriteGameAccess,
   getAllFavoriteGamesAccess,
+  setFavoriteGameAccess,
 } from '../dataAccess/favoriteGamesAccess';
 import { DocumentData } from 'firebase/firestore';
 
@@ -10,7 +11,7 @@ export async function getAllFavoriteGamesAction(userEmail: string) {
 
   const result = await getAllFavoriteGamesAccess(userEmail);
   result.forEach((doc) => {
-    games.push(doc.data());
+    games.push({ ...doc.data(), doc_id: doc.id });
   });
 
   return games;
@@ -18,4 +19,8 @@ export async function getAllFavoriteGamesAction(userEmail: string) {
 
 export async function addFavoriteGameAction(data: IFavoriteGame) {
   return await addFavoriteGameAccess(data);
+}
+
+export async function setFavoriteGameAction(data: IFavoriteGame) {
+  return await setFavoriteGameAccess(data);
 }
