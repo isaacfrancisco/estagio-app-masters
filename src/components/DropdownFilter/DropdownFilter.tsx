@@ -8,7 +8,7 @@ const DropdownFilter = ({
 }: DropdownFilterProps) => {
   return (
     <select className='select-box' value={genreSelected} onChange={handleDropdownChange}>
-      <option value=''>Selecione uma opção</option>
+      <option value=''>Selecione um gênero</option>
       {gamesGenre.map((genre, index) => {
         return (
           <option value={genre} key={index}>

@@ -10,4 +10,5 @@ export interface GameProps {
   developer: string;
   release_date: string;
   freetogame_profile_url: string;
+  is_favorite?: boolean;
 }

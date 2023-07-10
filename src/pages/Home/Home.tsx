@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import './Home.css';
 import ErrorContainer from '../../components/ErrorContainer/ErrorContainer';
 import Loader from '../../components/Loader/Loader';
@@ -10,6 +10,9 @@ import List from '~/components/List/List';
 import ListItem from '~/components/ListItem/ListItem';
 import Card from '~/components/Card/Card';
 import Header from '~/components/Header';
+import FavoriteButton from '~/components/FavoriteButton';
+import { getAllFavoriteGamesAction } from '~/database/services/actions/favoriteGamesAction';
+import { IFavoriteGame } from '~/database/interfaces/favoriteGamesInterface';
 
 const Home = () => {
   const [games, setGames] = useState<GameProps[]>([]);
@@ -18,12 +21,21 @@ const Home = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>('');
   const [genreSelected, setGenreSelected] = useState<string>('');
+  const [currentGames, setCurrentGames] = useState<GameProps[]>([]);
+  const [gamesGenre, setGamesGenre] = useState<string[]>([]);
+  const [filteredGames, setFilteredGames] = useState<GameProps[]>([]);
+  const [userFavoriteGames, setUserFavoriteGames] = useState<IFavoriteGame[]>([]);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const gamesPerPage = 6;
 
   const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-  console.log('currentUser', currentUser);
+
+  const updateCurrentGames = useCallback(() => {
+    const lastGameIndex = currentPage * gamesPerPage;
+    const firstGameIndex = lastGameIndex - gamesPerPage;
+    setCurrentGames(filteredGames.slice(firstGameIndex, lastGameIndex));
+  }, [currentPage, filteredGames, gamesPerPage]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,20 +75,52 @@ const Home = () => {
     fetchData();
   }, []);
 
-  const filteredGames =
-    genreSelected.length > 0
-      ? games.filter((game) => {
-          return game.genre.toLowerCase() === genreSelected.toLowerCase();
-        })
-      : games.filter((game) => {
-          return game.title.toLowerCase().startsWith(search.toLowerCase());
-        });
+  useEffect(() => {
+    const fetchUserFavoriteGames = async () => {
+      try {
+        const result = await getAllFavoriteGamesAction(currentUser.email);
+        setUserFavoriteGames(result as IFavoriteGame[]);
+      } catch (error: any) {
+        console.log(error);
+      }
+    };
 
-  const gamesGenre = Array.from(new Set(games.map((game) => game.genre)));
+    if (currentUser.email) {
+      fetchUserFavoriteGames();
+    }
+  }, [currentUser.email]);
 
-  const lastGameIndex = currentPage * gamesPerPage;
-  const firstGameIndex = lastGameIndex - gamesPerPage;
-  const currentGames = filteredGames.slice(firstGameIndex, lastGameIndex);
+  const updatedGamesWithFavorites = filteredGames.map((game) => {
+    const favoriteGameInList = userFavoriteGames.find(
+      (favoriteGame) => favoriteGame.game_title === game.title,
+    );
+    if (favoriteGameInList) {
+      game.is_favorite = true;
+      return game;
+    }
+    return game;
+  });
+
+  const favoriteGamesList = updatedGamesWithFavorites.filter((game) => game.is_favorite);
+
+  useEffect(() => {
+    updateCurrentGames();
+  }, [updateCurrentGames]);
+
+  useEffect(() => {
+    const genres = Array.from(new Set(games.map((game) => game.genre)));
+    setGamesGenre(genres);
+
+    const filtered =
+      genreSelected.length > 0
+        ? games.filter((game) => game.genre.toLowerCase() === genreSelected.toLowerCase())
+        : games.filter((game) => game.title.toLowerCase().startsWith(search.toLowerCase()));
+    setFilteredGames(filtered);
+  }, [games, genreSelected, search]);
+
+  const handleFilterFavorites = () => {
+    setFilteredGames(favoriteGamesList);
+  };
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
@@ -100,6 +144,7 @@ const Home = () => {
           <div className='main'>
             <div className='filter-container'>
               <SearchInput search={search} handleSearchChange={handleSearchChange} />
+              <FavoriteButton handleFilterFavorites={handleFilterFavorites} />
               <DropdownFilter
                 gamesGenre={gamesGenre}
                 genreSelected={genreSelected}
@@ -115,6 +160,7 @@ const Home = () => {
                       description={game.short_description}
                       image={game.thumbnail}
                       title={game.title}
+                      is_favorite={game.is_favorite}
                     />
                   </ListItem>
                 );

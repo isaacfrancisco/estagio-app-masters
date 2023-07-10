@@ -7,9 +7,11 @@ import { addFavoriteGameAction } from '~/database/services/actions/favoriteGames
 import { ICurrentUser } from '~/database/interfaces/usersInterface';
 import { useState } from 'react';
 
-const Card = ({ id, image, title, description }: CardProps) => {
+const Card = ({ id, image, title, description, is_favorite }: CardProps) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const { uid, email }: ICurrentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+  const changeButtonClass = isFavorite ? 'heart-active' : 'heart';
 
   const handleAddFavoriteGame = () => {
     addFavoriteGameAction({
@@ -32,7 +34,7 @@ const Card = ({ id, image, title, description }: CardProps) => {
         <p className='card-text'>{description}</p>
         <div className='heart-icon-box'>
           <img
-            className={isFavorite ? 'heart-active' : 'heart'}
+            className={is_favorite ? 'heart-active' : changeButtonClass}
             onClick={handleAddFavoriteGame}
             src={HeartIcon}
             alt=''
