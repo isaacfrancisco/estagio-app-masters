@@ -1,10 +1,4 @@
-import {
-  User,
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signOut,
-} from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { auth } from '../config/firebaseConfig';
 
 export const createUser = async ({ email, password }: { email: string; password: string }) => {
@@ -23,13 +17,4 @@ export const signOutUser = () => {
     .catch((error) => {
       throw error;
     });
-};
-
-export const getCurrentUser = () => {
-  onAuthStateChanged(auth, (user: User | null) => {
-    if (user) {
-      const currentUser = { uid: user.uid, email: user.email };
-      localStorage.setItem('currentUser', JSON.stringify(currentUser));
-    }
-  });
 };

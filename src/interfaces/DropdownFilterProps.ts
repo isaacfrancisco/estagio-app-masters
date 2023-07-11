@@ -1,7 +1,7 @@
-import { ChangeEvent } from 'react';
+import { SelectChangeEvent } from '@mui/material';
 
 export interface DropdownFilterProps {
   genreSelected: string;
-  handleDropdownChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  handleDropdownChange: (event: SelectChangeEvent) => void;
   gamesGenre: string[];
 }

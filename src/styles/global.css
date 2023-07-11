@@ -1,14 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Poppins:400,700&amp;display=swap');
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html {
-  background-color: #a3def9;
-}
+@import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&amp;display=swap');
 
 body {
   color: #272727;
@@ -16,12 +6,6 @@ body {
   font-style: normal;
   font-weight: 400;
   letter-spacing: 0;
-  padding: 1rem;
   min-height: 100%;
-}
-
-h1 {
-  font-size: 24px;
-  font-weight: 400;
-  text-align: center;
+  margin: 0;
 }
