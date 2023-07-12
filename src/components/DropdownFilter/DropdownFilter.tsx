@@ -11,16 +11,6 @@ const DropdownFilter = ({
   gamesGenre,
 }: DropdownFilterProps) => {
   return (
-    // <select className='select-box' value={genreSelected} onChange={handleDropdownChange}>
-    //   <option value=''>Selecione um gênero</option>
-    //   {gamesGenre.map((genre, index) => {
-    //     return (
-    //       <option value={genre} key={index}>
-    //         {genre}
-    //       </option>
-    //     );
-    //   })}
-    // </select>
     <FormControl fullWidth>
       <InputLabel id='simple-select-label'>Genero</InputLabel>
       <Select

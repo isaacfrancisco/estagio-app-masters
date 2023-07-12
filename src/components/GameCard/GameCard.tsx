@@ -36,7 +36,7 @@ const GameCard = ({
       .then(() => {
         setIsFavorite(true);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
 
   const handleUpdateFavoriteGame = (currentRating: any) => {
@@ -52,7 +52,7 @@ const GameCard = ({
       .then(() => {
         setRating(currentRating);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   };
 
   return (
@@ -79,7 +79,7 @@ const GameCard = ({
         />
         <Rating
           name='controlled'
-          value={rating}
+          value={game_current_rating}
           onChange={(_, newValue) => handleUpdateFavoriteGame(newValue)}
         />
       </CardActions>

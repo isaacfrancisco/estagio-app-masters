@@ -4,17 +4,15 @@ import ErrorContainer from '../../components/ErrorContainer/ErrorContainer';
 import Loader from '../../components/Loader/Loader';
 import SearchInput from '../../components/SearchInput/SearchInput';
 import DropdownFilter from '../../components/DropdownFilter/DropdownFilter';
-import { GameProps } from '~/interfaces/HomeProps';
+import { GameProps, GamePropsList } from '~/interfaces/HomeProps';
 import GameCard from '~/components/GameCard/GameCard';
 import Header from '~/components/Header';
 import FavoriteButtonFilter from '~/components/FavoriteButtonFilter';
-import { getAllFavoriteGamesAction } from '~/database/services/actions/favoriteGamesAction';
-import { IFavoriteGame } from '~/database/interfaces/favoriteGamesInterface';
 import { Box, Container, Grid, SelectChangeEvent } from '@mui/material';
-import { User, onAuthStateChanged } from 'firebase/auth';
-import { auth } from '~/database/config/firebaseConfig';
 import { useAuth } from '~/contexts/hooks/useAuth';
 import SortRatingButton from '~/components/SortRatingButton';
+import { useFavorite } from '~/contexts/hooks/useFavorite';
+import { IFavoriteGame } from '~/database/interfaces/favoriteGamesInterface';
 
 const Home = () => {
   const [games, setGames] = useState<GameProps[]>([]);
@@ -23,19 +21,15 @@ const Home = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>('');
   const [genreSelected, setGenreSelected] = useState<string>('');
-  const [gamesGenre, setGamesGenre] = useState<string[]>([]);
-  const [filteredGames, setFilteredGames] = useState<GameProps[]>([]);
-  const [userFavoriteGames, setUserFavoriteGames] = useState<IFavoriteGame[]>([]);
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [isSort, setIsSort] = useState<boolean>(false);
 
-  const { user, setUser } = useAuth();
+  const { user, getUser } = useAuth();
+  const { favoriteGames, fetchUserFavoriteGames } = useFavorite();
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user: User | null) => {
-      if (user) {
-        setUser({ user_uid: user.uid, user_email: user.email });
-      }
-    });
-  }, [setUser]);
+    getUser();
+  }, [getUser]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,58 +70,52 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const fetchUserFavoriteGames = async () => {
-      try {
-        const result = await getAllFavoriteGamesAction(user.user_email);
-        setUserFavoriteGames(result as IFavoriteGame[]);
-      } catch (error: any) {
-        console.log(error);
+    if (user) {
+      fetchUserFavoriteGames('test@test.com');
+    }
+  }, [fetchUserFavoriteGames, user]);
+
+  const filteredGames = () => {
+    const updatedGamesWithFavorites: GamePropsList[] = games.map((game) => {
+      const favoriteGameInList = favoriteGames?.find(
+        (favoriteGame: IFavoriteGame) => favoriteGame.game_title === game.title,
+      );
+      if (favoriteGameInList) {
+        return { ...favoriteGameInList, ...game, is_favorite: true };
       }
-    };
-
-    if (user?.user_email) {
-      fetchUserFavoriteGames();
-    }
-  }, [user?.user_email]);
-
-  const updatedGamesWithFavorites = filteredGames.map((game) => {
-    const favoriteGameInList = userFavoriteGames.find(
-      (favoriteGame) => favoriteGame.game_title === game.title,
-    );
-    if (favoriteGameInList) {
-      game.is_favorite = true;
-      game.doc_id = favoriteGameInList.doc_id;
-      game.rating = favoriteGameInList.rating;
+      game.rating = 0;
       return game;
+    });
+
+    if (isFavorite) {
+      const favoriteGamesList: GamePropsList[] = updatedGamesWithFavorites.filter(
+        (game) => game.is_favorite,
+      );
+      return favoriteGamesList;
     }
-    game.rating = 0;
-    return game;
-  });
 
-  console.log('updated games', updatedGamesWithFavorites);
+    if (isSort) {
+      const sortedGamesList = updatedGamesWithFavorites.sort(
+        (a: any, b: any) => a.rating - b.rating,
+      );
+      return sortedGamesList;
+    }
 
-  const favoriteGamesList = updatedGamesWithFavorites.filter((game) => game.is_favorite);
-  const favoriteGenresList = Array.from(new Set(favoriteGamesList.map((game) => game.genre)));
-
-  useEffect(() => {
-    const genres = Array.from(new Set(games.map((game) => game.genre)));
-    setGamesGenre(genres);
-
-    const filtered =
-      genreSelected.length > 0
-        ? games.filter((game) => game.genre.toLowerCase() === genreSelected.toLowerCase())
-        : games.filter((game) => game.title.toLowerCase().startsWith(search.toLowerCase()));
-    setFilteredGames(filtered);
-  }, [games, genreSelected, search]);
-
-  const handleFilterFavorites = (e: any) => {
-    setFilteredGames(favoriteGamesList);
-    setGamesGenre(favoriteGenresList);
-    setGames(favoriteGamesList);
+    return updatedGamesWithFavorites;
   };
 
-  const handleSortGames = (e: any) => {
-    console.log('');
+  console.log('filteredGames', filteredGames());
+
+  const genres = isFavorite
+    ? Array.from(new Set(filteredGames().map((game) => game.genre)))
+    : Array.from(new Set(games.map((game) => game.genre)));
+
+  const handleFilterFavorites = () => {
+    setIsFavorite(!isFavorite);
+  };
+
+  const handleSortGames = () => {
+    setIsSort(!isSort);
   };
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -155,28 +143,35 @@ const Home = () => {
               <FavoriteButtonFilter handleFilterFavorites={handleFilterFavorites} />
               <SortRatingButton handleSortGames={handleSortGames} />
               <DropdownFilter
-                gamesGenre={gamesGenre}
+                gamesGenre={genres}
                 genreSelected={genreSelected}
                 handleDropdownChange={handleDropdownChange}
               />
             </Box>
             <Container sx={{ py: 8 }} maxWidth='md'>
               <Grid container spacing={4}>
-                {updatedGamesWithFavorites.splice(0, 60)?.map((game: GameProps, index: number) => {
-                  return (
-                    <Grid item key={index} xs={12} sm={6} md={4}>
-                      <GameCard
-                        doc_id={game.doc_id}
-                        id={game.id}
-                        description={game.short_description}
-                        image={game.thumbnail}
-                        title={game.title}
-                        is_favorite={game.is_favorite}
-                        rating={game.rating ?? 0}
-                      />
-                    </Grid>
-                  );
-                })}
+                {filteredGames()
+                  .slice(0, 60)
+                  .filter((item) => {
+                    return search.toLowerCase() === ''
+                      ? item
+                      : item.title.toLowerCase().includes(search);
+                  })
+                  ?.map((game: GamePropsList, index: number) => {
+                    return (
+                      <Grid item key={index} xs={12} sm={6} md={4}>
+                        <GameCard
+                          doc_id={game.doc_id}
+                          id={game.id}
+                          description={game.short_description}
+                          image={game.thumbnail}
+                          title={game.title}
+                          is_favorite={game.is_favorite}
+                          rating={game.rating}
+                        />
+                      </Grid>
+                    );
+                  })}
               </Grid>
             </Container>
           </div>

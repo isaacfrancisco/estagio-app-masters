@@ -28,50 +28,12 @@ const Register: React.FC = () => {
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        console.log('errorCode', errorCode);
-        console.log('errorMessage', errorMessage);
+        console.error('errorCode', errorCode);
+        console.error('errorMessage', errorMessage);
       });
   };
 
   return (
-    // <div className='container'>
-    //   <h1>Por favor digite suas informações de cadastro</h1>
-    //   <form>
-    //     <div className='inputContainer'>
-    //       <label htmlFor='email'>E-mail</label>
-    //       <input
-    //         type='text'
-    //         name='email'
-    //         placeholder='test@test.com'
-    //         onChange={(e) => setEmail(e.target.value)}
-    //       />
-    //     </div>
-    //     <div className='inputContainer'>
-    //       <label htmlFor='password'>Senha</label>
-    //       <input
-    //         type='password'
-    //         name='password'
-    //         placeholder='********************'
-    //         onChange={(e) => setPassword(e.target.value)}
-    //       />
-    //     </div>
-    //     <div className='inputContainer'>
-    //       <label htmlFor='password'>Confirme a Senha</label>
-    //       <input
-    //         type='password'
-    //         name='confirm-password'
-    //         onChange={(e) => setConfirmPassword(e.target.value)}
-    //       />
-    //     </div>
-    //     <button onClick={(e) => handleCreateUser(e)} className='button'>
-    //       Cadastrar
-    //     </button>
-    //     <div className='footer'>
-    //       <p>Você já tem uma conta?</p>
-    //       <Link to='/login'>Acesse sua conta aqui</Link>
-    //     </div>
-    //   </form>
-    // </div>
     <Container component='main' maxWidth='xs'>
       <Typography variant='h5' textAlign={'center'} sx={{ m: 2 }} gutterBottom>
         Por favor digite suas informações de cadastro

@@ -14,3 +14,7 @@ export interface GameProps {
   doc_id?: string;
   rating?: number;
 }
+
+export interface GamePropsList extends GameProps {
+  rating: number;
+}

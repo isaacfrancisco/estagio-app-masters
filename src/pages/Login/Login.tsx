@@ -1,6 +1,5 @@
-import React, { FormEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInUser } from '~/database/services/firebaseService';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -15,60 +14,15 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const { user, setUser } = useAuth();
+  const { handleSignIn } = useAuth();
 
   const navigate = useNavigate();
 
-  const handleSignIn = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    signInUser({ email, password })
-      .then((userCredential) => {
-        const userData = userCredential.user;
-        setUser({ user_uid: userData.uid, user_email: userData.email });
-        console.log('user', user);
-        navigate('/');
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log('errorCode', errorCode);
-        console.log('errorMessage', errorMessage);
-      });
+  const onSuccess = () => {
+    navigate('/');
   };
 
   return (
-    // <div className='container'>
-    //   <h1>Por favor digite suas informações de login</h1>
-    //   <form>
-    //     <div className='inputContainer'>
-    //       <label htmlFor='email'>E-mail</label>
-    //       <input
-    //         type='text'
-    //         name='email'
-    //         placeholder='test@test.com'
-    //         onChange={(e) => setEmail(e.target.value)}
-    //       />
-    //     </div>
-    //     <div className='inputContainer'>
-    //       <label htmlFor='password'>Senha</label>
-    //       <input
-    //         type='password'
-    //         name='password'
-    //         placeholder='********************'
-    //         onChange={(e) => setPassword(e.target.value)}
-    //       />
-    //     </div>
-
-    //     <button onClick={(e) => handleSignIn(e)} className='button'>
-    //       Cadastrar
-    //     </button>
-    //     <div className='footer'>
-    //       <p>Não possui uma conta?</p>
-    //       <Link to='/register'>Cadastre sua conta aqui!</Link>
-    //     </div>
-    //   </form>
-    // </div>
     <Container component='main' maxWidth='xs'>
       <Typography variant='h5' textAlign={'center'} sx={{ m: 2 }} gutterBottom>
         Por favor digite suas informações de login
@@ -85,7 +39,15 @@ const Login: React.FC = () => {
         <Typography component='h1' variant='h5'>
           Entrar
         </Typography>
-        <Box component='form' onSubmit={handleSignIn} noValidate sx={{ mt: 1 }}>
+        <Box
+          component='form'
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSignIn({ email, password, onSuccess });
+          }}
+          noValidate
+          sx={{ mt: 1 }}
+        >
           <TextField
             margin='normal'
             required
@@ -93,7 +55,9 @@ const Login: React.FC = () => {
             id='email'
             label='Email'
             name='email'
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
           />
           <TextField
             margin='normal'
