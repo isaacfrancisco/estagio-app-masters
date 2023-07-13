@@ -24,7 +24,7 @@ export const AuthContextProvider = ({ children }: IAuthProvider) => {
   const [user, setUser] = useState({} as any);
 
   const getUser = () => {
-    if (!user) {
+    if (Object.keys(user).length === 0) {
       onAuthStateChanged(auth, (user: User | null) => {
         if (user) {
           setUser({ user_uid: user.uid, user_email: user.email });

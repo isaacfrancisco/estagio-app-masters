@@ -12,8 +12,10 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  const userExists = Object.keys(user).length > 0;
+
   const handleAuth = () => {
-    if (user) {
+    if (userExists) {
       navigate('/login');
       return signOutUser();
     }
@@ -28,7 +30,7 @@ const Header: React.FC = () => {
             AppMasters Test
           </Typography>
           <Button color='inherit' onClick={handleAuth}>
-            {user ? 'logout' : 'login'}
+            {userExists ? 'logout' : 'login'}
           </Button>
         </Toolbar>
       </AppBar>

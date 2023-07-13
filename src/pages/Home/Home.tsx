@@ -25,6 +25,7 @@ const Home = () => {
   const [isSort, setIsSort] = useState<boolean>(false);
 
   const { user, getUser } = useAuth();
+  const userExists = Object.keys(user).length > 0;
   const { favoriteGames, fetchUserFavoriteGames } = useFavorite();
 
   useEffect(() => {
@@ -71,7 +72,7 @@ const Home = () => {
 
   useEffect(() => {
     if (user) {
-      fetchUserFavoriteGames('test@test.com');
+      fetchUserFavoriteGames(user.user_email);
     }
   }, [fetchUserFavoriteGames, user]);
 
@@ -83,6 +84,19 @@ const Home = () => {
   const favoriteGamesIds = favoriteGames?.map((item: IFavoriteGame) => item.game_id);
 
   const filteredGames = () => {
+    const gamesList = games.map((game) => {
+      const favoriteGameInList = favoriteGames.find(
+        (favoriteGame: any) => favoriteGame.game_id === game.id,
+      );
+      if (favoriteGameInList) {
+        game.doc_id = favoriteGameInList.doc_id;
+        game.rating = favoriteGameInList.rating;
+        return game;
+      }
+      game.rating = 0;
+      return game;
+    });
+
     if (isFavorite) {
       const favoriteGamesList: GameProps[] = games.filter((game) =>
         favoriteGamesIds.includes(game.id),
@@ -90,13 +104,7 @@ const Home = () => {
       return favoriteGamesList;
     }
 
-    // preciso arrumar
-    if (isSort) {
-      const sortedGamesList = games.sort((a: any, b: any) => a.rating - b.rating);
-      return sortedGamesList;
-    }
-
-    return games;
+    return gamesList;
   };
 
   const genres = isFavorite
@@ -104,11 +112,12 @@ const Home = () => {
     : Array.from(new Set(games.map((game) => game.genre)));
 
   const handleFilterFavorites = () => {
-    setIsFavorite(!isFavorite);
+    if (userExists) {
+      return setIsFavorite(!isFavorite);
+    }
   };
 
   const handleSortGames = () => {
-    console.log('srot games', !isSort);
     setIsSort(!isSort);
   };
 
@@ -132,6 +141,9 @@ const Home = () => {
       return genreSelected.length > 0
         ? value.genre.toLowerCase() === genreSelected.toLowerCase()
         : value;
+    })
+    .sort((a: any, b: any) => {
+      return isSort ? b.rating - a.rating : a.rating - b.rating;
     });
 
   return (
@@ -171,10 +183,13 @@ const Home = () => {
               marginTop={{ xs: 3, sm: 3, md: 3 }}
             >
               <Grid item>
-                <FavoriteButtonFilter handleFilterFavorites={handleFilterFavorites} />
+                <FavoriteButtonFilter
+                  disabled={!userExists}
+                  handleFilterFavorites={handleFilterFavorites}
+                />
               </Grid>
               <Grid item>
-                <SortRatingButton handleSortGames={handleSortGames} />
+                <SortRatingButton disabled={!userExists} handleSortGames={handleSortGames} />
               </Grid>
             </Grid>
 
