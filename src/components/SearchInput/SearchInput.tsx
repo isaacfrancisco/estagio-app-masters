@@ -5,7 +5,7 @@ import SearchIcon from '@mui/icons-material/Search';
 
 const SearchInput = ({ search, handleSearchChange }: SearchInputProps) => {
   return (
-    <FormControl fullWidth sx={{ m: 1 }}>
+    <FormControl fullWidth>
       <InputLabel htmlFor='outlined-adornment-search'>Buscar</InputLabel>
       <OutlinedInput
         id='outlined-adornment-search'

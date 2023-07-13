@@ -7,7 +7,7 @@ const FavoriteButtonFilter = ({
 }: {
   handleFilterFavorites: (selectedState: boolean) => void;
 }) => {
-  const [selected, setSelected] = useState(true);
+  const [selected, setSelected] = useState(false);
 
   return (
     <ToggleButton
