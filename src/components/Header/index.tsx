@@ -16,10 +16,10 @@ const Header: React.FC = () => {
 
   const handleAuth = () => {
     if (userExists) {
-      navigate('/login');
+      navigate('/auth');
       return signOutUser();
     }
-    navigate('/login');
+    navigate('/auth');
   };
 
   return (
