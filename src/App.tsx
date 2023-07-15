@@ -8,9 +8,9 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path='/estagio-app-masters/' element={<Home />} />
-        <Route path='/estagio-app-masters/auth' element={<Auth />} />
-        <Route path='/estagio-app-masters/*' element={<Error />} />
+        <Route path='/' element={<Home />} />
+        <Route path='/auth' element={<Auth />} />
+        <Route path='/*' element={<Error />} />
       </Routes>
     </div>
   );
