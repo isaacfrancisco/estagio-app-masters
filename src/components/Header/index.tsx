@@ -16,8 +16,8 @@ const Header: React.FC = () => {
 
   const handleAuth = () => {
     if (userExists) {
-      navigate('/');
-      return signOutUser();
+      signOutUser();
+      return navigate(0);
     }
     navigate('/auth');
   };
