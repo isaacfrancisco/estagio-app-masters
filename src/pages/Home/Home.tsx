@@ -1,11 +1,11 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import './Home.css';
-import ErrorContainer from '../../components/ErrorContainer/ErrorContainer';
-import Loader from '../../components/Loader/Loader';
-import SearchInput from '../../components/SearchInput/SearchInput';
-import DropdownFilter from '../../components/DropdownFilter/DropdownFilter';
+import ErrorContainer from '../../components/ErrorContainer';
+import Loader from '../../components/Loader';
+import SearchInput from '../../components/SearchInput';
+import DropdownFilter from '../../components/DropdownFilter';
 import { GameProps } from '~/interfaces/HomeProps';
-import GameCard from '~/components/GameCard/GameCard';
+import GameCard from '~/components/GameCard';
 import Header from '~/components/Header';
 import FavoriteButtonFilter from '~/components/FavoriteButtonFilter';
 import { Container, Grid, SelectChangeEvent } from '@mui/material';

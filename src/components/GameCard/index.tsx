@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import { useAuth } from '~/contexts/hooks/useAuth';
 import HeartIcon from '../../assets/heart.svg';
-import './GameCard.css';
+import './styles.css';
 import SimpleSnackbar from '../SimpleSnackbar';
 
 const GameCard = ({

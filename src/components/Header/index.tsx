@@ -6,7 +6,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { useAuth } from '~/contexts/hooks/useAuth';
-import { signOutUser } from '~/database/services/firebaseService';
+import { signOutUser } from '~/database/services/authService';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();

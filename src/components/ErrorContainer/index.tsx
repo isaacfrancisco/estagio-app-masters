@@ -1,6 +1,6 @@
 import SadIcon from '../../assets/sad.svg';
-import FlexContainer from '../FlexContainer/FlexContainer';
-import './ErrorContainer.css';
+import FlexContainer from '../FlexContainer';
+import './styles.css';
 
 const ErrorContainer = ({ message }: { message: string }) => {
   return (

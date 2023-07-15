@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import './FlexContainer.css';
+import './styles.css';
 
 const FlexContainer = ({ children }: { children: ReactNode }) => {
   return <div className='flex-container'>{children}</div>;

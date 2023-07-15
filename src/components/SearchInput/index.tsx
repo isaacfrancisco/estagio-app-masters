@@ -1,5 +1,4 @@
 import { SearchInputProps } from '~/interfaces/SearchInputProps';
-import './SearchInput.css';
 import { FormControl, InputAdornment, InputLabel, OutlinedInput } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 

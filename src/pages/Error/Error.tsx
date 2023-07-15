@@ -1,4 +1,4 @@
-import FlexContainer from '~/components/FlexContainer/FlexContainer';
+import FlexContainer from '~/components/FlexContainer';
 
 const Error = () => {
   return (

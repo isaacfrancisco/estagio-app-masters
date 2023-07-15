@@ -1,7 +1,7 @@
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { createContext, useState } from 'react';
 import { auth } from '~/database/config/firebaseConfig';
-import { createUser, signInUser } from '~/database/services/firebaseService';
+import { createUser, signInUser } from '~/database/services/authService';
 
 interface IAuthProvider {
   children: React.ReactNode;
