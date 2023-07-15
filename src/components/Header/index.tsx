@@ -16,10 +16,10 @@ const Header: React.FC = () => {
 
   const handleAuth = () => {
     if (userExists) {
-      navigate('/auth');
+      navigate('/estagio-app-masters/auth');
       return signOutUser();
     }
-    navigate('/auth');
+    navigate('/estagio-app-masters/auth');
   };
 
   return (

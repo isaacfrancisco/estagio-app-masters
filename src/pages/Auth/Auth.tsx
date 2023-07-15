@@ -27,7 +27,7 @@ const Auth: React.FC = () => {
   };
 
   const onSuccess = () => {
-    navigate('/');
+    navigate('/estagio-app-masters/');
   };
 
   const onError = () => {

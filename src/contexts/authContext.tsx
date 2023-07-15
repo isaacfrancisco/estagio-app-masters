@@ -31,7 +31,6 @@ export const AuthContextProvider = ({ children }: IAuthProvider) => {
     if (Object.keys(user).length === 0) {
       onAuthStateChanged(auth, (user: User | null) => {
         if (user) {
-          console.log(user);
           setUser({ user_uid: user.uid, user_email: user.email });
         }
       });
