@@ -16,7 +16,6 @@ import { useFormik } from 'formik';
 const Auth: React.FC = () => {
   const [isSignIn, setIsSignIn] = useState(true);
   const [open, setOpen] = useState(false);
-  const [message, setMessage] = useState('');
 
   const { handleSignIn, handleCreateUser, errorMessage } = useAuth();
 
@@ -32,7 +31,6 @@ const Auth: React.FC = () => {
 
   const onError = () => {
     setOpen(true);
-    setMessage(errorMessage);
   };
 
   const handleClose = (_: React.SyntheticEvent | Event, reason?: string) => {
@@ -185,7 +183,12 @@ const Auth: React.FC = () => {
           )}
         </Box>
       </Container>
-      <SimpleSnackbar open={open} message={message} severity={'error'} handleClose={handleClose} />
+      <SimpleSnackbar
+        open={open}
+        message={errorMessage}
+        severity={'error'}
+        handleClose={handleClose}
+      />
     </>
   );
 };
