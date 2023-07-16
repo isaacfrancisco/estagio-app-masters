@@ -51,7 +51,7 @@ const GameCard = ({
     setOpen(false);
   };
 
-  const handleAddFavoriteGame = () => {
+  const handleFavoriteGame = () => {
     if (userExists && !doc_id) {
       setIsFavoriteClicked(true);
       return addFavoriteGameAction({
@@ -60,13 +60,21 @@ const GameCard = ({
         is_favorite: true,
       })
         .then(() => fetchUserFavoriteGames(user.user_uid))
-        .catch((error) => console.error(error));
+        .catch((error) => {
+          setOpen(true);
+          setMessage(`Erro ao favoritar: ${error.code}`);
+          setSeverity('error');
+        });
     }
     if (userExists && doc_id) {
       setIsFavoriteClicked(false);
       return deleteFavoriteGameAction(doc_id)
         .then(() => fetchUserFavoriteGames(user.user_uid))
-        .catch((error: any) => console.error(error));
+        .catch((error) => {
+          setOpen(true);
+          setMessage(`Erro ao remover favorito: ${error.code}`);
+          setSeverity('error');
+        });
     }
     setOpen(true);
     setMessage('É necessario estar logado para favoritar um jogo');
@@ -84,7 +92,11 @@ const GameCard = ({
         is_favorite: is_favorite ?? false,
       })
         .then(() => fetchUserFavoriteGames(user.user_uid))
-        .catch((error) => console.error(error));
+        .catch((error) => {
+          setOpen(true);
+          setMessage(`Erro ao avaliar: ${error.code}`);
+          setSeverity('error');
+        });
     }
     setOpen(true);
     setMessage('É necessario estar logado para avaliar um jogo');
@@ -113,7 +125,7 @@ const GameCard = ({
               {' '}
               <img
                 className={is_favorite ? 'heart-active' : changeButtonClass}
-                onClick={handleAddFavoriteGame}
+                onClick={handleFavoriteGame}
                 src={HeartIcon}
                 alt=''
               />

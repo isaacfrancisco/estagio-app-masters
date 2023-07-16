@@ -67,13 +67,16 @@ const Home = () => {
       }
     };
     fetchData();
+    if (user) {
+      fetchUserFavoriteGames(user.user_uid);
+    }
   }, []);
 
   useEffect(() => {
     if (user) {
       fetchUserFavoriteGames(user.user_uid);
     }
-  }, []);
+  }, [user]);
 
   const favoriteGamesReduced = favoriteGames?.reduce(
     (prev: any, current: any) => ({ ...prev, [current.game_id]: { ...current } }),
@@ -112,10 +115,8 @@ const Home = () => {
     : Array.from(new Set(games.map((game) => game.genre)));
 
   const handleFilterFavorites = () => {
-    if (userExists) {
-      fetchUserFavoriteGames(user.user_uid);
-      return setIsFavorite(!isFavorite);
-    }
+    fetchUserFavoriteGames(user.user_uid);
+    return setIsFavorite(!isFavorite);
   };
 
   const handleSortGames = () => {
@@ -134,6 +135,7 @@ const Home = () => {
     return <ErrorContainer message={errorMessage} />;
   }
 
+  // array filtrado e ordenado, iniciando pela ordem crescente
   const filteredGamesList = filteredGames()
     .filter((item) => {
       return search.toLowerCase() === '' ? item : item.title.toLowerCase().includes(search);
@@ -206,7 +208,7 @@ const Home = () => {
                         image={game.thumbnail}
                         title={game.title}
                         is_favorite={game.is_favorite}
-                        rating={favoriteGamesReduced[game.id]?.rating ?? 0}
+                        rating={game.rating ?? 0}
                       />
                     </Grid>
                   );

@@ -48,9 +48,6 @@ export const AuthContextProvider = ({ children }: IAuthProvider) => {
       })
       .catch((error) => {
         const errorCode = error.code;
-        const errorMessage = error.message;
-        console.error('errorCode', errorCode);
-        console.error('errorMessage', errorMessage);
         setErrorMessage(errorCode);
         onError();
       });
@@ -63,9 +60,6 @@ export const AuthContextProvider = ({ children }: IAuthProvider) => {
       })
       .catch((error) => {
         const errorCode = error.code;
-        const errorMessage = error.message;
-        console.error('errorCode', errorCode);
-        console.error('errorMessage', errorMessage);
         setErrorMessage(errorCode);
         onError();
       });
