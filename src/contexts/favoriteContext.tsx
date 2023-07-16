@@ -8,7 +8,7 @@ interface IFavoriteProvider {
 
 interface IFavoriteContextData {
   favoriteGames: any;
-  fetchUserFavoriteGames: (email: string) => void;
+  fetchUserFavoriteGames: (userUid: string) => void;
 }
 
 export const FavoriteContext = createContext<IFavoriteContextData>({} as IFavoriteContextData);
@@ -16,10 +16,10 @@ export const FavoriteContext = createContext<IFavoriteContextData>({} as IFavori
 export const FavoriteContextProvider = ({ children }: IFavoriteProvider) => {
   const [favoriteGames, setFavoriteGames] = useState<IFavoriteGame[]>([]);
 
-  const fetchUserFavoriteGames = async (email: string) => {
+  const fetchUserFavoriteGames = async (userUid: string) => {
     try {
-      if (email && !(favoriteGames.length > 0)) {
-        const result = await getAllFavoriteGamesAction(email);
+      if (userUid) {
+        const result = await getAllFavoriteGamesAction(userUid);
         setFavoriteGames(result as IFavoriteGame[]);
       }
     } catch (error: any) {

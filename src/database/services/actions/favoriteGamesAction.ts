@@ -6,10 +6,10 @@ import {
 } from '../dataAccess/favoriteGamesAccess';
 import { DocumentData } from 'firebase/firestore';
 
-export async function getAllFavoriteGamesAction(userEmail: string) {
+export async function getAllFavoriteGamesAction(userUid: string) {
   const games: DocumentData[] = [];
 
-  const result = await getAllFavoriteGamesAccess(userEmail);
+  const result = await getAllFavoriteGamesAccess(userUid);
   result.forEach((doc) => {
     games.push({ ...doc.data(), doc_id: doc.id });
   });

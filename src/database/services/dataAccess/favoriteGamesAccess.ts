@@ -3,8 +3,8 @@ import { db } from '~/database/config/firebaseConfig';
 import { IFavoriteGame } from '~/database/interfaces/favoriteGamesInterface';
 import { generatePushID } from '~/database/utils/docIdGenerator';
 
-export async function getAllFavoriteGamesAccess(userEmail: string) {
-  const q = query(collection(db, 'favorite-games'), where('user_email', '==', userEmail));
+export async function getAllFavoriteGamesAccess(userUid: string) {
+  const q = query(collection(db, 'favorite-games'), where('user_uid', '==', userUid));
 
   return await getDocs(q);
 }
@@ -16,20 +16,18 @@ export async function addFavoriteGameAccess(data: IFavoriteGame) {
 export async function setFavoriteGameAccess({
   doc_id,
   user_uid,
-  user_email,
   game_id,
-  game_title,
   rating,
+  is_favorite,
 }: IFavoriteGame) {
   const documentRef = doc(db, 'favorite-games', doc_id ?? `${generatePushID()()}`);
   return await setDoc(
     documentRef,
     {
       user_uid,
-      user_email,
       game_id,
-      game_title,
       rating,
+      is_favorite,
     },
     { merge: true },
   );

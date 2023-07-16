@@ -72,7 +72,7 @@ const Home = () => {
 
   useEffect(() => {
     if (user) {
-      fetchUserFavoriteGames(user.user_email);
+      fetchUserFavoriteGames(user.user_uid);
     }
   }, [fetchUserFavoriteGames, user]);
 

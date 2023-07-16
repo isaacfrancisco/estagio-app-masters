@@ -20,6 +20,7 @@ import { useAuth } from '~/contexts/hooks/useAuth';
 import HeartIcon from '../../assets/heart.svg';
 import './styles.css';
 import SimpleSnackbar from '../SimpleSnackbar';
+import { useFavorite } from '~/contexts/hooks/useFavorite';
 
 const GameCard = ({
   doc_id,
@@ -37,6 +38,7 @@ const GameCard = ({
   const [severity, setSeverity] = useState<AlertColor | undefined>('info');
 
   const { user } = useAuth();
+  const { fetchUserFavoriteGames } = useFavorite();
 
   const userExists = Object.keys(user).length > 0;
   const changeButtonClass = isFavoriteClicked ? 'heart-active heart-clicked' : 'heart';
@@ -53,11 +55,10 @@ const GameCard = ({
       setIsFavoriteClicked(true);
       return addFavoriteGameAction({
         game_id: id,
-        game_title: title,
-        user_email: user.user_email,
         user_uid: user.user_uid,
+        is_favorite: true,
       })
-        .then()
+        .then(() => fetchUserFavoriteGames(user.user_uid))
         .catch((error) => console.error(error));
     }
     setOpen(true);
@@ -70,13 +71,12 @@ const GameCard = ({
       setRating(currentRating);
       return setFavoriteGameAction({
         game_id: id,
-        game_title: title,
-        user_email: user.user_email,
         user_uid: user.user_uid,
         doc_id,
         rating: currentRating,
+        is_favorite: is_favorite ?? false,
       })
-        .then()
+        .then(() => fetchUserFavoriteGames(user.user_uid))
         .catch((error) => console.error(error));
     }
     setOpen(true);

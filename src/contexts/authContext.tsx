@@ -12,9 +12,11 @@ interface IHandleAuthProps {
   onSuccess: () => void;
   onError: () => void;
 }
-
+interface IUser {
+  user_uid: string;
+}
 interface IAuthContextData {
-  user: any;
+  user: IUser;
   getUser: any;
   handleSignIn: (props: IHandleAuthProps) => void;
   handleCreateUser: (props: IHandleAuthProps) => void;
@@ -31,7 +33,7 @@ export const AuthContextProvider = ({ children }: IAuthProvider) => {
     if (Object.keys(user).length === 0) {
       onAuthStateChanged(auth, (user: User | null) => {
         if (user) {
-          setUser({ user_uid: user.uid, user_email: user.email });
+          setUser({ user_uid: user.uid });
         }
       });
     }
@@ -41,7 +43,7 @@ export const AuthContextProvider = ({ children }: IAuthProvider) => {
     signInUser({ email, password })
       .then((userCredential) => {
         const userData = userCredential.user;
-        setUser({ user_uid: userData.uid, user_email: userData.email });
+        setUser({ user_uid: userData.uid });
         onSuccess();
       })
       .catch((error) => {
