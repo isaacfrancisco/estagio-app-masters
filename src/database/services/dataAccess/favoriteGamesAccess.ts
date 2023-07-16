@@ -1,4 +1,13 @@
-import { addDoc, collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from 'firebase/firestore';
 import { db } from '~/database/config/firebaseConfig';
 import { IFavoriteGame } from '~/database/interfaces/favoriteGamesInterface';
 import { generatePushID } from '~/database/utils/docIdGenerator';
@@ -31,4 +40,8 @@ export async function setFavoriteGameAccess({
     },
     { merge: true },
   );
+}
+
+export async function deleteFavoriteGameAccess(docId: string) {
+  return await deleteDoc(doc(db, 'favorite-games', docId));
 }

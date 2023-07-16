@@ -3,6 +3,7 @@
 import { CardProps } from '~/interfaces/CardProps';
 import {
   addFavoriteGameAction,
+  deleteFavoriteGameAction,
   setFavoriteGameAction,
 } from '~/database/services/actions/favoriteGamesAction';
 import { useState } from 'react';
@@ -51,7 +52,7 @@ const GameCard = ({
   };
 
   const handleAddFavoriteGame = () => {
-    if (userExists) {
+    if (userExists && !doc_id) {
       setIsFavoriteClicked(true);
       return addFavoriteGameAction({
         game_id: id,
@@ -60,6 +61,12 @@ const GameCard = ({
       })
         .then(() => fetchUserFavoriteGames(user.user_uid))
         .catch((error) => console.error(error));
+    }
+    if (userExists && doc_id) {
+      setIsFavoriteClicked(false);
+      return deleteFavoriteGameAction(doc_id)
+        .then(() => fetchUserFavoriteGames(user.user_uid))
+        .catch((error: any) => console.error(error));
     }
     setOpen(true);
     setMessage('É necessario estar logado para favoritar um jogo');

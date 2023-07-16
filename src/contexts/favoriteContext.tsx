@@ -18,9 +18,10 @@ export const FavoriteContextProvider = ({ children }: IFavoriteProvider) => {
 
   const fetchUserFavoriteGames = async (userUid: string) => {
     try {
+      // && !(favoriteGames.length > 0)
       if (userUid) {
         const result = await getAllFavoriteGamesAction(userUid);
-        setFavoriteGames(result as IFavoriteGame[]);
+        setFavoriteGames([...result] as IFavoriteGame[]);
       }
     } catch (error: any) {
       console.error(error);

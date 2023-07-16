@@ -4,7 +4,7 @@ import ErrorContainer from '../../components/ErrorContainer';
 import Loader from '../../components/Loader';
 import SearchInput from '../../components/SearchInput';
 import DropdownFilter from '../../components/DropdownFilter';
-import { GameProps } from '~/interfaces/HomeProps';
+import { GameProps, GamePropsList } from '~/interfaces/HomeProps';
 import GameCard from '~/components/GameCard';
 import Header from '~/components/Header';
 import FavoriteButtonFilter from '~/components/FavoriteButtonFilter';
@@ -12,7 +12,6 @@ import { Container, Grid, SelectChangeEvent } from '@mui/material';
 import { useAuth } from '~/contexts/hooks/useAuth';
 import SortRatingButton from '~/components/SortRatingButton';
 import { useFavorite } from '~/contexts/hooks/useFavorite';
-import { IFavoriteGame } from '~/database/interfaces/favoriteGamesInterface';
 
 const Home = () => {
   const [games, setGames] = useState<GameProps[]>([]);
@@ -74,36 +73,37 @@ const Home = () => {
     if (user) {
       fetchUserFavoriteGames(user.user_uid);
     }
-  }, [fetchUserFavoriteGames, user]);
+  }, []);
 
   const favoriteGamesReduced = favoriteGames?.reduce(
     (prev: any, current: any) => ({ ...prev, [current.game_id]: { ...current } }),
     {},
   );
 
-  const favoriteGamesIds = favoriteGames?.map((item: IFavoriteGame) => item.game_id);
-
   const filteredGames = () => {
-    const gamesList = games.map((game) => {
+    const gamesList: GamePropsList[] = games.map((game) => {
       const favoriteGameInList = favoriteGames.find(
         (favoriteGame: any) => favoriteGame.game_id === game.id,
       );
       if (favoriteGameInList) {
-        game.doc_id = favoriteGameInList.doc_id;
-        game.rating = favoriteGameInList.rating;
-        return game;
+        return {
+          ...game,
+          doc_id: favoriteGameInList.doc_id,
+          rating: favoriteGameInList.rating,
+          is_favorite: favoriteGameInList.is_favorite,
+        };
       }
-      game.rating = 0;
-      return game;
+      return {
+        ...game,
+        rating: 0,
+        is_favorite: false,
+      };
     });
 
     if (isFavorite) {
-      const favoriteGamesList: GameProps[] = games.filter((game) =>
-        favoriteGamesIds.includes(game.id),
-      );
+      const favoriteGamesList: GameProps[] = gamesList.filter((game) => game.is_favorite === true);
       return favoriteGamesList;
     }
-
     return gamesList;
   };
 
@@ -113,6 +113,7 @@ const Home = () => {
 
   const handleFilterFavorites = () => {
     if (userExists) {
+      fetchUserFavoriteGames(user.user_uid);
       return setIsFavorite(!isFavorite);
     }
   };
@@ -204,7 +205,7 @@ const Home = () => {
                         description={game.short_description}
                         image={game.thumbnail}
                         title={game.title}
-                        is_favorite={favoriteGamesIds.includes(game.id)}
+                        is_favorite={game.is_favorite}
                         rating={favoriteGamesReduced[game.id]?.rating ?? 0}
                       />
                     </Grid>

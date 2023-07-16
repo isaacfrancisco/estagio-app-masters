@@ -1,6 +1,7 @@
 import { IFavoriteGame } from '~/database/interfaces/favoriteGamesInterface';
 import {
   addFavoriteGameAccess,
+  deleteFavoriteGameAccess,
   getAllFavoriteGamesAccess,
   setFavoriteGameAccess,
 } from '../dataAccess/favoriteGamesAccess';
@@ -23,4 +24,8 @@ export async function addFavoriteGameAction(data: IFavoriteGame) {
 
 export async function setFavoriteGameAction(data: IFavoriteGame) {
   return await setFavoriteGameAccess(data);
+}
+
+export async function deleteFavoriteGameAction(docId: string) {
+  return await deleteFavoriteGameAccess(docId);
 }
