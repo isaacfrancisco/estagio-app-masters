@@ -6,7 +6,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { useAuth } from '~/contexts/hooks/useAuth';
-import { signOutUser } from '~/database/services/authService';
+import { signOutUserAction } from '~/database/services/actions/authAction';
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const Header: React.FC = () => {
 
   const handleAuth = () => {
     if (userExists) {
-      signOutUser();
+      signOutUserAction();
       return navigate(0);
     }
     navigate('/auth');

@@ -1,7 +1,7 @@
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { createContext, useState } from 'react';
 import { auth } from '~/database/config/firebaseConfig';
-import { createUser, signInUser } from '~/database/services/authService';
+import { createUserAction, signInUserAction } from '~/database/services/actions/authAction';
 
 interface IAuthProvider {
   children: React.ReactNode;
@@ -40,7 +40,7 @@ export const AuthContextProvider = ({ children }: IAuthProvider) => {
   };
 
   const handleSignIn = ({ email, password, onSuccess, onError }: IHandleAuthProps) => {
-    signInUser({ email, password })
+    signInUserAction({ email, password })
       .then((userCredential) => {
         const userData = userCredential.user;
         setUser({ user_uid: userData.uid });
@@ -54,7 +54,7 @@ export const AuthContextProvider = ({ children }: IAuthProvider) => {
   };
 
   const handleCreateUser = ({ email, password, onSuccess, onError }: IHandleAuthProps) => {
-    createUser({ email, password })
+    createUserAction({ email, password })
       .then(() => {
         onSuccess();
       })
