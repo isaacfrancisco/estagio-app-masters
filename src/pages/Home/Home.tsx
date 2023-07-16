@@ -8,7 +8,7 @@ import { GameProps, GamePropsList } from '~/interfaces/HomeProps';
 import GameCard from '~/components/GameCard';
 import Header from '~/components/Header';
 import FavoriteButtonFilter from '~/components/FavoriteButtonFilter';
-import { Container, Grid, SelectChangeEvent } from '@mui/material';
+import { Box, Container, Grid, Pagination, SelectChangeEvent } from '@mui/material';
 import { useAuth } from '~/contexts/hooks/useAuth';
 import SortRatingButton from '~/components/SortRatingButton';
 import { useFavorite } from '~/contexts/hooks/useFavorite';
@@ -22,6 +22,9 @@ const Home = () => {
   const [genreSelected, setGenreSelected] = useState<string>('');
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [isSort, setIsSort] = useState<boolean>(false);
+
+  const [page, setPage] = useState(1);
+  const [postPerPage] = useState(9);
 
   const { user, getUser } = useAuth();
   const userExists = Object.keys(user).length > 0;
@@ -78,11 +81,6 @@ const Home = () => {
     }
   }, [user]);
 
-  const favoriteGamesReduced = favoriteGames?.reduce(
-    (prev: any, current: any) => ({ ...prev, [current.game_id]: { ...current } }),
-    {},
-  );
-
   const filteredGames = () => {
     const gamesList: GamePropsList[] = games.map((game) => {
       const favoriteGameInList = favoriteGames.find(
@@ -135,7 +133,7 @@ const Home = () => {
     return <ErrorContainer message={errorMessage} />;
   }
 
-  // array filtrado e ordenado, iniciando pela ordem crescente
+  // array filtrado e ordenado, iniciando pela ordem decrescente
   const filteredGamesList = filteredGames()
     .filter((item) => {
       return search.toLowerCase() === '' ? item : item.title.toLowerCase().includes(search);
@@ -146,7 +144,7 @@ const Home = () => {
         : value;
     })
     .sort((a: any, b: any) => {
-      return isSort ? b.rating - a.rating : a.rating - b.rating;
+      return isSort ? a.rating - b.rating : b.rating - a.rating;
     });
 
   return (
@@ -198,23 +196,43 @@ const Home = () => {
 
             <Container sx={{ py: 8 }} maxWidth='md'>
               <Grid container spacing={4}>
-                {filteredGamesList?.slice(0, 20).map((game: GameProps) => {
-                  return (
-                    <Grid item key={game.id} xs={12} sm={6} md={4}>
-                      <GameCard
-                        doc_id={game.doc_id}
-                        id={game.id}
-                        description={game.short_description}
-                        image={game.thumbnail}
-                        title={game.title}
-                        is_favorite={game.is_favorite}
-                        rating={game.rating ?? 0}
-                      />
-                    </Grid>
-                  );
-                })}
+                {filteredGamesList
+                  ?.slice((page - 1) * postPerPage, page * postPerPage)
+                  .map((game: GameProps) => {
+                    return (
+                      <Grid item key={game.id} xs={12} sm={6} md={4}>
+                        <GameCard
+                          doc_id={game.doc_id}
+                          id={game.id}
+                          description={game.short_description}
+                          image={game.thumbnail}
+                          title={game.title}
+                          is_favorite={game.is_favorite}
+                          rating={game.rating ?? 0}
+                        />
+                      </Grid>
+                    );
+                  })}
               </Grid>
             </Container>
+            <Box
+              justifyContent={'center'}
+              alignItems={'center'}
+              display={'flex'}
+              sx={{ margin: 2 }}
+            >
+              <Pagination
+                page={page}
+                onChange={(_, value) => setPage(value)}
+                count={Math.ceil(filteredGamesList?.length / postPerPage)}
+                color='primary'
+                shape='rounded'
+                showFirstButton
+                showLastButton
+                size='large'
+                defaultPage={1}
+              />
+            </Box>
           </div>
         </>
       )}
